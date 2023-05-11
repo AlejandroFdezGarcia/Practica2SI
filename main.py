@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import sqlite3
+import csv
+import pandas as pd
 
-# Press Mayús+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#Para poner los datos del csv en la Base de datos
 
+conn = sqlite3.connect('bd.db')
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+cursor = conn.cursor()
+cursor.execute('''CREATE TABLE alertas
+                   (timestamp datetime, sid int, msg text, clasification text, priority int, protocol text, origin text, destination text, port int)''')
 
+with open('alerts.csv', newline='') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        cursor.execute("INSERT INTO alertas (timestamp, sid, msg, clasification, priority, protocol, origin, destination, port) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", row)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+conn.commit()
+conn.close()
