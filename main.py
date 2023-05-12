@@ -34,20 +34,28 @@ def top_ips(x):
 
 @app.route('/top_devices/<int:x>')
 def top_devices(x):
-    con = sqlite3.connect('bd.db')
-    cur = con.cursor()
-    cur.execute(f"SELECT origin, COUNT(*) FROM alertas WHERE priority = 1 GROUP BY origin ORDER BY COUNT(*) DESC LIMIT {x}")
+    conn = sqlite3.connect('bd.db')
+    cursor = conn.cursor()
 
-    results = cur.fetchall()
-    con.close()
+    query = """
+    SELECT origin, COUNT(*) AS total
+    FROM alertas
+    GROUP BY origin
+    ORDER BY total DESC
+    """
 
-    devices = [result[0] for result in results]
-    counts = [result[1] for result in results]
+    cursor.execute(query)
+    results = cursor.fetchall()
 
-    plt.bar(devices[:x], counts[:x])  # Limitar a los primeros x elementos
-    plt.xlabel('Dispositivos')
-    plt.ylabel('Número de incidencias')
-    plt.title(f'Top {x} dispositivos más vulnerables (prioridad = 1)')
+    conn.close()
+
+    devices = [result[0] for result in results[:x]]
+    counts = [result[1] for result in results[:x]]
+
+    plt.bar(devices, counts)
+    plt.title(f"Top {x} dispositivos más vulnerables")
+    plt.xlabel("Dispositivo")
+    plt.ylabel("Número de alertas")
 
     # Guardar el gráfico en un archivo
     graph_file = 'static/graph.png'
@@ -56,6 +64,7 @@ def top_devices(x):
 
     # Renderizar la plantilla HTML con la ruta al archivo del gráfico
     return render_template('graph.html', graph_file=graph_file)
+
 
 
 if __name__ == '__main__':
