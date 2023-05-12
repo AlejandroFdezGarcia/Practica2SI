@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import requests
 import pandas as pd
 from flask import Flask, render_template
 import matplotlib.pyplot as plt
@@ -64,6 +65,11 @@ def top_devices(x):
 
     # Renderizar la plantilla HTML con la ruta al archivo del gráfico
     return render_template('graph.html', graph_file=graph_file)
+
+@app.route('/sobaco')
+def vulnerabilidades():
+    vulner=requests.get("https://cve.circl.lu/api/last")
+    return render_template(r'C:\Users\derit\OneDrive\Documentos\GitHub\Practica2SI\templates\vulnerabilidades.html', vulner=vulner)
 
 
 
