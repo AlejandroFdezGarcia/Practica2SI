@@ -69,7 +69,7 @@ def top_devices(x):
 @app.route('/sobaco')
 def vulnerabilidades():
     vulner=requests.get("https://cve.circl.lu/api/last")
-    return render_template(r'C:\Users\derit\OneDrive\Documentos\GitHub\Practica2SI\templates\vulnerabilidades.html', vulner=vulner)
+    return render_template('vulnerabilidades.html', vulner=vulner)
 
 
 
