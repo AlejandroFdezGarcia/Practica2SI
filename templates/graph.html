@@ -5,5 +5,10 @@
 </head>
 <body>
     <img src="{{ url_for('static', filename='graph.png') }}" alt="Gráfico">
+    <ul>
+        {% for result in results %}
+            <li>{{ result }}</li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

@@ -30,7 +30,7 @@ def top_ips(x):
     plt.close()
 
     # Renderizar la plantilla HTML con la ruta al archivo del gráfico
-    return render_template('graph.html', graph_file=graph_file)
+    return render_template('graph.html', graph_file=graph_file, results=ips[:x])
 
 
 @app.route('/top_devices/<int:x>')
@@ -64,7 +64,7 @@ def top_devices(x):
     plt.close()
 
     # Renderizar la plantilla HTML con la ruta al archivo del gráfico
-    return render_template('graph.html', graph_file=graph_file)
+    return render_template('graph.html', graph_file=graph_file, results=devices)
 
 @app.route('/sobaco')
 def vulnerabilidades():
