@@ -127,6 +127,89 @@ def top_dangerous():
 
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
+@app.route('/infoUnsafeDevices')
+def infoUnsafeDevices():
+    conn = sqlite3.connect('bd.db')
+    cursor = conn.cursor()
+
+    query = """
+    SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos,
+           analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
+    FROM dispositivos
+    """
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    conn.close()
+
+    devices = []
+
+    for result in results:
+        device = {
+            'id': result[0],
+            'ip': result[1],
+            'localizacion': result[2],
+            'responsable_nombre': result[3],
+            'responsable_telefono': result[4],
+            'responsable_rol': result[5],
+            'analisis_puertosabiertos': result[6],
+            'analisis_servicios': result[7],
+            'analisis_serviciosinseguros': result[8],
+            'analisis_vulnerabilidadesdetectadas': result[9]
+        }
+
+        total_services = result[7]
+        unsafe_services = result[8]
+
+        if total_services > 0 and (unsafe_services / total_services) > 0.33:
+            devices.append(device)
+
+    return render_template('devices.html', title='Dispositivos con más del 33% de servicios inseguros', devices=devices)
+
+@app.route('/infoSafeDevices')
+def infoSafeDevices():
+    conn = sqlite3.connect('bd.db')
+    cursor = conn.cursor()
+
+    query = """
+    SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos,
+           analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
+    FROM dispositivos
+    """
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    conn.close()
+
+    devices = []
+
+    for result in results:
+        device = {
+            'id': result[0],
+            'ip': result[1],
+            'localizacion': result[2],
+            'responsable_nombre': result[3],
+            'responsable_telefono': result[4],
+            'responsable_rol': result[5],
+            'analisis_puertosabiertos': result[6],
+            'analisis_servicios': result[7],
+            'analisis_serviciosinseguros': result[8],
+            'analisis_vulnerabilidadesdetectadas': result[9]
+        }
+
+        total_services = result[7]
+        unsafe_services = result[8]
+
+        if total_services == 0 and unsafe_services == 0:
+            devices.append(device)
+        elif total_services > 0 and (unsafe_services / total_services) < 0.33:
+            devices.append(device)
+
+    return render_template('devices.html', title='Dispositivos con menos del 33% de servicios inseguros', devices=devices)
+
+
 @app.route('/sobaco')
 def vulnerabilities():
     vulner=requests.get("https://cve.circl.lu/api/last")

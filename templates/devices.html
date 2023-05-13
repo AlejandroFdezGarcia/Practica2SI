@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>IP</th>
+                <th>Localización</th>
+                <th>Responsable</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
+                <th>Análisis de Puertos Abiertos</th>
+                <th>Análisis de Servicios</th>
+                <th>Análisis de Servicios Inseguros</th>
+                <th>Análisis de Vulnerabilidades Detectadas</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for device in devices %}
+                <tr>
+                    <td>{{ device.id }}</td>
+                    <td>{{ device.ip }}</td>
+                    <td>{{ device.localizacion }}</td>
+                    <td>{{ device.responsable_nombre }}</td>
+                    <td>{{ device.responsable_telefono }}</td>
+                    <td>{{ device.responsable_rol }}</td>
+                    <td>{{ device.analisis_puertosabiertos }}</td>
+                    <td>{{ device.analisis_servicios }}</td>
+                    <td>{{ device.analisis_serviciosinseguros }}</td>
+                    <td>{{ device.analisis_vulnerabilidadesdetectadas }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
