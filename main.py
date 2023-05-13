@@ -2,11 +2,26 @@ import sqlite3
 import csv
 import requests
 import pandas as pd
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for
 import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/select_ips', methods=['GET', 'POST'])
+def select_ips():
+    if request.method == 'POST':
+        num_ips = int(request.form['num_ips'])
+
+        if num_ips > 0 and num_ips < 20:
+            return redirect(url_for('top_ips', x=num_ips))
+        else:
+            return redirect(url_for('index'))
+
+    return render_template('select_ips.html')
 @app.route('/top_ips/<int:x>')
 def top_ips(x):
     con = sqlite3.connect('bd.db')
@@ -30,7 +45,17 @@ def top_ips(x):
 
     return render_template('graph.html', graph_file=graph_file, results=ips[:x])
 
+@app.route('/select_devices', methods=['GET', 'POST'])
+def select_devices():
+    if request.method == 'POST':
+        num_devices = int(request.form['num_devices'])
 
+        if num_devices > 0 and num_devices < 20:
+            return redirect(url_for('top_devices', x=num_devices))
+        else:
+            return redirect(url_for('index'))
+
+    return render_template('select_devices.html')
 @app.route('/top_devices/<int:x>')
 def top_devices(x):
     conn = sqlite3.connect('bd.db')
@@ -103,9 +128,9 @@ def top_dangerous():
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
 @app.route('/sobaco')
-def vulnerabilidades():
+def vulnerabilities():
     vulner=requests.get("https://cve.circl.lu/api/last")
-    return render_template('vulnerabilidades.html', vulner=vulner)
+    return render_template('vulnerabilities.html', vulner=vulner)
 
 
 
