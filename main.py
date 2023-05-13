@@ -19,17 +19,15 @@ def top_ips(x):
     ips = [result[0] for result in results]
     counts = [result[1] for result in results]
 
-    plt.bar(ips[:x], counts[:x])  # Limitar a los primeros x elementos
+    plt.bar(ips[:x], counts[:x])
     plt.xlabel('IPs de origen')
     plt.ylabel('Número de incidencias')
     plt.title(f'Top {x} IPs de origen con mayor número de incidencias (prioridad = 1)')
 
-    # Guardar el gráfico en un archivo
     graph_file = 'static/graph.png'
     plt.savefig(graph_file, format='png')
     plt.close()
 
-    # Renderizar la plantilla HTML con la ruta al archivo del gráfico
     return render_template('graph.html', graph_file=graph_file, results=ips[:x])
 
 
@@ -58,12 +56,10 @@ def top_devices(x):
     plt.xlabel("Dispositivo")
     plt.ylabel("Número de alertas")
 
-    # Guardar el gráfico en un archivo
     graph_file = 'static/graph.png'
     plt.savefig(graph_file, format='png')
     plt.close()
 
-    # Renderizar la plantilla HTML con la ruta al archivo del gráfico
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
 @app.route('/top_dangerous')
@@ -100,12 +96,10 @@ def top_dangerous():
     plt.ylabel('Proporción de servicios inseguros')
     plt.title('Top de dispositivos peligrosos')
 
-    # Guardar el gráfico en un archivo
     graph_file = 'static/graph.png'
     plt.savefig(graph_file, format='png')
     plt.close()
 
-    # Renderizar la plantilla HTML con la ruta al archivo del gráfico y los resultados
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
 @app.route('/sobaco')
