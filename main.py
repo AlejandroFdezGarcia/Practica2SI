@@ -66,6 +66,48 @@ def top_devices(x):
     # Renderizar la plantilla HTML con la ruta al archivo del gráfico
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
+@app.route('/top_dangerous')
+def top_dangerous():
+    conn = sqlite3.connect('bd.db')
+    cursor = conn.cursor()
+
+    query = """
+    SELECT id, analisis_servicios, analisis_serviciosinseguros
+    FROM dispositivos
+    """
+
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    conn.close()
+
+    devices = []
+    unsafe_service_ratios = []
+
+    for result in results:
+        device = result[0]
+        total_services = result[1]
+        unsafe_services = result[2]
+
+        if total_services > 0 and (unsafe_services / total_services) > 0.33:
+            devices.append(device)
+            unsafe_service_ratio = unsafe_services / total_services
+            unsafe_service_ratios.append(unsafe_service_ratio)
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(devices, unsafe_service_ratios)
+    plt.xlabel('Dispositivos')
+    plt.ylabel('Proporción de servicios inseguros')
+    plt.title('Top de dispositivos peligrosos')
+
+    # Guardar el gráfico en un archivo
+    graph_file = 'static/graph.png'
+    plt.savefig(graph_file, format='png')
+    plt.close()
+
+    # Renderizar la plantilla HTML con la ruta al archivo del gráfico y los resultados
+    return render_template('graph.html', graph_file=graph_file, results=devices)
+
 @app.route('/sobaco')
 def vulnerabilidades():
     vulner=requests.get("https://cve.circl.lu/api/last")
