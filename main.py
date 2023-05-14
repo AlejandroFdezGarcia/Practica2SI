@@ -210,12 +210,16 @@ def infoSafeDevices():
     return render_template('devices.html', title='Dispositivos con menos del 33% de servicios inseguros', devices=devices)
 
 
-@app.route('/sobaco')
+@app.route('/vulner')
 def vulnerabilities():
     vulner=requests.get("https://cve.circl.lu/api/last")
-    return render_template('vulnerabilities.html', vulner=vulner)
+    savevulner= vulner.json()
+    emptyList=[]
+    for x in range(0, 10):
+        emptyList.append((savevulner[x]["id"], savevulner[x]["summary"]))
+    return render_template('vulnerabilities.html', emptyList=emptyList)
 
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

@@ -5,6 +5,31 @@
     <title>10 últimas vulnerabilidades</title>
 </head>
 <body>
-{{vulner}}
+<h1 style="text-align:center">10 últimas vulnerabilidades</h1>
+{% if emptyList %}
+<ul>
+    <li>{{emptyList[0][0]}}</li>
+    {{emptyList[0][1]}}
+    <li>{{emptyList[1][0]}}</li>
+    {{emptyList[1][1]}}
+    <li>{{emptyList[2][0]}}</li>
+    {{emptyList[2][1]}}
+    <li>{{emptyList[3][0]}}</li>
+    {{emptyList[3][1]}}
+    <li>{{emptyList[4][0]}}</li>
+    {{emptyList[4][1]}}
+    <li>{{emptyList[5][0]}}</li>
+    {{emptyList[5][1]}}
+    <li>{{emptyList[6][0]}}</li>
+    {{emptyList[6][1]}}
+    <li>{{emptyList[7][0]}}</li>
+    {{emptyList[7][1]}}
+    <li>{{emptyList[8][0]}}</li>
+    {{emptyList[8][1]}}
+    <li>{{emptyList[9][0]}}</li>
+    {{emptyList[9][1]}}
+</ul>
+{% endif %}
+
 </body>
 </html>
