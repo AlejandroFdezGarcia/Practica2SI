@@ -67,7 +67,7 @@ def top_devices(x):
     conn = sqlite3.connect('bd.db')
     cursor = conn.cursor()
 
-    query = """SELECT origin, COUNT(*) AS total from alertas group by origin order by total desc """
+    query = """SELECT origin, COUNT(*) AS total FROM alertas GROUP BY origin ORDER BY total DESC """
 
     cursor.execute(query)
     results = cursor.fetchall()
@@ -93,10 +93,7 @@ def top_dangerous():
     conn = sqlite3.connect('bd.db')
     cursor = conn.cursor()
 
-    query = """
-    SELECT id, analisis_servicios, analisis_serviciosinseguros
-    FROM dispositivos
-    """
+    query = """SELECT id, analisis_servicios, analisis_serviciosinseguros FROM dispositivos"""
 
     cursor.execute(query)
     results = cursor.fetchall()
@@ -133,11 +130,8 @@ def infoUnsafeDevices():
     conn = sqlite3.connect('bd.db')
     cursor = conn.cursor()
 
-    query = """
-    SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos,
-           analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
-    FROM dispositivos
-    """
+    query = """SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos, analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
+    FROM dispositivos"""
 
     cursor.execute(query)
     results = cursor.fetchall()
@@ -174,10 +168,8 @@ def infoSafeDevices():
     cursor = conn.cursor()
 
     query = """
-    SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos,
-           analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
-    FROM dispositivos
-    """
+    SELECT id, ip, localizacion, responsable_nombre, responsable_telefono, responsable_rol, analisis_puertosabiertos, analisis_servicios, analisis_serviciosinseguros, analisis_vulnerabilidadesdetectadas
+    FROM dispositivos"""
 
     cursor.execute(query)
     results = cursor.fetchall()
