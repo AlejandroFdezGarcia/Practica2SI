@@ -4,6 +4,12 @@ import requests
 import pandas as pd
 from flask import Flask, render_template, request, redirect, url_for
 import matplotlib.pyplot as plt
+from fpdf import FPDF
+class PDF(FPDF):
+    pass
+    def graph(self, name, x, y, w, h):
+        self.image(name, x, y, w, y)
+
 
 app = Flask(__name__)
 
@@ -46,6 +52,12 @@ def top_ips(x):
     plt.savefig(graph_file, format='png')
     plt.close()
 
+    pdf = PDF()
+    pdf.add_page()
+    pdf.graph('static/graph.png', 0, 0, 60, 15)
+    pdf.set_author('Nombre')
+    pdf.output('ipReport.pdf', 'F')
+
     return render_template('graph.html', graph_file=graph_file, results=ips[:x])
 
 @app.route('/select_devices', methods=['GET', 'POST'])
@@ -86,6 +98,12 @@ def top_devices(x):
     plt.savefig(graph_file, format='png')
     plt.close()
 
+    pdf = PDF()
+    pdf.add_page()
+    pdf.graph('static/graph.png', 0, 0, 60, 15)
+    pdf.set_author('Nombre')
+    pdf.output('devicesReport.pdf', 'F')
+
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
 @app.route('/top_dangerous')
@@ -122,6 +140,12 @@ def top_dangerous():
     graph_file = 'static/graph.png'
     plt.savefig(graph_file, format='png')
     plt.close()
+
+    pdf = PDF()
+    pdf.add_page()
+    pdf.graph('static/graph.png', 0, 0, 60, 15)
+    pdf.set_author('Nombre')
+    pdf.output('top_dangerousReport.pdf', 'F')
 
     return render_template('graph.html', graph_file=graph_file, results=devices)
 
@@ -212,6 +236,36 @@ def vulnerabilities():
         emptyList.append((savevulner[x]["id"], savevulner[x]["summary"]))
     return render_template('vulnerabilities.html', emptyList=emptyList)
 
+
+
+@app.route('/select_day', methods=['GET', 'POST'])
+def select_day():
+    if request.method == 'POST':
+        day = str(request.form['day'])
+        return redirect(url_for('analyse', day=day))
+
+    return render_template('select_day.html')
+
+@app.route('/analyse/<string:day>')
+def analyse(day):
+    conection = sqlite3.connect('bd.db')
+    cursor = conection.cursor()
+    cursor.execute("SELECT origin, COUNT(*) FROM alertas WHERE substr(timestamp, 1, 10) = '%s' GROUP BY origin ORDER BY COUNT(*)" % day)
+    data = cursor.fetchall()
+    conection.close()
+
+    ips = [result[0] for result in data]
+    counts = [result[1] for result in data]
+
+    plt.bar(ips[:len(ips)], counts[:len(counts)])
+    plt.xlabel('IPs de origen')
+    plt.ylabel('Número de incidencias')
+    plt.title(f'Conexiones de Ips en el día {day} ')
+
+    graph_file = 'static/graph.png'
+    plt.savefig(graph_file, format='png')
+    plt.close()
+    return render_template('analyse.html', data=data, graph_file=graph_file)
 
 
 if __name__ == '__main__':

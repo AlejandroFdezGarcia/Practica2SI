@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Análisis de conexiones por día de Ips</title>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='graph.png') }}" alt="Gráfico">
+    <ul>
+        {% for result in data %}
+            <li>{{ result }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
