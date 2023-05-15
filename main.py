@@ -67,12 +67,7 @@ def top_devices(x):
     conn = sqlite3.connect('bd.db')
     cursor = conn.cursor()
 
-    query = """
-    SELECT origin, COUNT(*) AS total
-    FROM alertas
-    GROUP BY origin
-    ORDER BY total DESC
-    """
+    query = """SELECT origin, COUNT(*) AS total from alertas group by origin order by total desc """
 
     cursor.execute(query)
     results = cursor.fetchall()
