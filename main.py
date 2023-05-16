@@ -274,8 +274,8 @@ def analyse(day):
 
 @app.route('/linearRegression')
 def linear_regression():
-    trainData = json.load(open(r"C:\Users\derit\Downloads\JSON Ejercicios IA 202223-20230516\devices_IA_clases.json", "r"))
-    testData = json.load(open(r"C:\Users\derit\Downloads\JSON Ejercicios IA 202223-20230516\devices_IA_predecir_v2.json", "r"))
+    trainData = json.load(open(r"devices_IA_clases.json", "r"))
+    testData = json.load(open(r"devices_IA_predecir_v2.json", "r"))
     xData = np.array([d["servicios"] for d in testData])
     yData = np.array([d["servicios_inseguros"] for d in testData])
     tag = ["No seguros" if d["peligroso"] == 1 else "Seguros" for d in testData]
@@ -291,7 +291,7 @@ def linear_regression():
     plt.savefig("static/graph.png")
     plt.close()
 
-    return render_template('/linearRegression.html', graphLinealRegresion="static/plot.png")
+    return render_template('linearRegression.html', graphLinealRegresion="static/plot.png")
 
 
 if __name__ == '__main__':
