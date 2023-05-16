@@ -294,6 +294,5 @@ def linear_regression():
     return render_template('/linearRegression.html', graphLinealRegresion="static/plot.png")
 
 
-
 if __name__ == '__main__':
     app.run(debug=True)
