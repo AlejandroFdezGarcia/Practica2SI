@@ -274,20 +274,22 @@ def analyse(day):
 
 @app.route('/linearRegression')
 def linear_regression():
-    trainData = json.load(open(r"devices_IA_clases.json", "r"))
-    testData = json.load(open(r"devices_IA_predecir_v2.json", "r"))
-    xData = np.array([d["servicios"] for d in testData])
-    yData = np.array([d["servicios_inseguros"] for d in testData])
-    tag = ["No seguros" if d["peligroso"] == 1 else "Seguros" for d in testData]
+    train = json.load(open(r"devices_IA_clases.json", "r"))
+    predict = json.load(open(r"devices_IA_predecir_v2.json", "r"))
+
+    xData = np.array([d["servicios"] for d in predict])
+    yData = np.array([d["servicios_inseguros"] for d in predict])
+
+    tag = ["No seguros" if d["peligroso"] == 1 else "Seguros" for d in predict]
     regresion_lineal = LinearRegression()
     regresion_lineal.fit(xData.reshape(-1, 1), yData)
     x = np.array([min(xData), max(xData)]).reshape(-1, 1)
     y = regresion_lineal.predict(x)
-    plt.scatter(xData, yData, c=["red" if aux == "No seguros" else "green" for aux in tag])
+
+    plt.scatter(xData, yData, c=["red" if aux == "No seguros" else "blue" for aux in tag])
     plt.plot(x, y)
     plt.xlabel('Servicios')
     plt.ylabel('Servicios Inseguros')
-    plt.title('Gráfico Regresión Lineal')
     plt.savefig("static/graph.png")
     plt.close()
 
