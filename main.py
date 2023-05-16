@@ -1,10 +1,15 @@
 import sqlite3
 import csv
+
+import numpy as np
 import requests
 import pandas as pd
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, json
 import matplotlib.pyplot as plt
 from fpdf import FPDF
+from sklearn.linear_model import LinearRegression
+
+
 class PDF(FPDF):
     pass
     def graph(self, name, x, y, w, h):
@@ -266,6 +271,28 @@ def analyse(day):
     plt.savefig(graph_file, format='png')
     plt.close()
     return render_template('analyse.html', data=data, graph_file=graph_file)
+
+@app.route('/linearRegression')
+def linear_regression():
+    trainData = json.load(open(r"C:\Users\derit\Downloads\JSON Ejercicios IA 202223-20230516\devices_IA_clases.json", "r"))
+    testData = json.load(open(r"C:\Users\derit\Downloads\JSON Ejercicios IA 202223-20230516\devices_IA_predecir_v2.json", "r"))
+    xData = np.array([d["servicios"] for d in testData])
+    yData = np.array([d["servicios_inseguros"] for d in testData])
+    tag = ["No seguros" if d["peligroso"] == 1 else "Seguros" for d in testData]
+    regresion_lineal = LinearRegression()
+    regresion_lineal.fit(xData.reshape(-1, 1), yData)
+    x = np.array([min(xData), max(xData)]).reshape(-1, 1)
+    y = regresion_lineal.predict(x)
+    plt.scatter(xData, yData, c=["red" if aux == "No seguros" else "green" for aux in tag])
+    plt.plot(x, y)
+    plt.xlabel('Servicios')
+    plt.ylabel('Servicios Inseguros')
+    plt.title('Gráfico Regresión Lineal')
+    plt.savefig("static/graph.png")
+    plt.close()
+
+    return render_template('/linearRegression.html', graphLinealRegresion="static/plot.png")
+
 
 
 if __name__ == '__main__':
